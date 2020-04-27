@@ -13,7 +13,6 @@ Room::Room() {
 }
 
 bool Room::getItem(string key) {
-  //reference_wrapper<Item> item = items[key];
   Item *item = items[key];
 
   if (item)
@@ -25,7 +24,6 @@ bool Room::getItem(string key) {
 }
 
 void Room::lookItem(string key) {
-  //reference_wrapper<Item> item = items[key];
   Item *item = items[key];
 
   if (item)
