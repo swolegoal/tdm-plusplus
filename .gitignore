@@ -1,16 +1,26 @@
+aclocal.m4
 Makefile
 src/Makefile
 *.deps
 *.cache
+*.in
 stamp-h1
 autom4te.cache
+compile
 config.h
 config.log
 config.status
+configure
+depcomp
+install-sh
+missing
 
-src/hospital
+src/tdm
 *.o
 
 *.swp
 *.swo
 *.swn
+
+test/
+recording/
