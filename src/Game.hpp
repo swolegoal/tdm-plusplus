@@ -18,11 +18,9 @@ enum game_txt { TITLE_SCREEN, INTRO_YOU, INTRO_ARE, INTRO_TDM,
 };
 
 class Game {
-  //friend class Room;  // Probably can be deleted...
-
   public:
     Game();
-    //~Game();
+    //~Game();  // Soon...
 
     inline vector<string> getArgs();  // Canst this be thy way?
     inline void sayArgs(vector<string> &args) const;
@@ -31,11 +29,9 @@ class Game {
     void sayTxt(const string *_txt) const;
     inline int getScore() const;
 
-    inline void lc(string *io);
+    void lc(string *io);
 
-    // Called from main() game loop, return status of 1 means play again and 0
-    // exits????
-    int play();
+    bool play(void);
 
     void addToScore(int amt);
     void Over();
@@ -45,7 +41,7 @@ class Game {
     bool over = false;
 
     enum room_key { MAIN_ROOM, NORTH, SOUTH, DENNIS };
-    vector<Room *> rooms = { new MainRoom(), new MainRoom() };
+    vector<Room *> rooms = { new MainRoom(), new NorthRoom() };
     Room *room = rooms.at(0);  // Current room
 
     const string txt[14] = {

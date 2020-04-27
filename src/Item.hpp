@@ -26,6 +26,9 @@ class Item : public GameWumpus {
     bool itm_get(void);
     void itm_look(void);
 
+    int getIdx(char ikey) const;
+    bool getOof() const;
+
   protected:
     int got_idx = -1;  // When a get gives your inventory an item
     int got_amt = 0;
@@ -38,11 +41,13 @@ class Item : public GameWumpus {
     int look_idx = 0;
 
     int look_type = 0;
+    bool oof = false;
 
     vector<string> get_txt;
     vector<string> look_txt;
 };
 
+// Main dungeon room
 class Scroll: public Item {
   public:
     Scroll();
@@ -53,5 +58,41 @@ class Scroll: public Item {
   private:
     bool zap = false;
 };
+
+class Flask: public Item {
+  public:
+    Flask();
+
+    bool itm_get(void);
+    void itm_look(void);
+};
+
+// North of main dungeon room
+class Parapets: public Item {
+  public:
+    Parapets();
+
+    bool itm_get(void);
+    void itm_look(void);
+};
+
+class Rope: public Item {
+  public:
+    Rope();
+
+    bool itm_get(void);
+    void itm_look(void);
+};
+
+// South of main dungeon room
+class Trinket: public Item {
+  public:
+    Trinket();
+
+    bool itm_get(void);
+    void itm_look(void);
+};
+
+// Dennis
 
 #endif  // ITEM_HPP

@@ -1,7 +1,7 @@
 #include "Game.hpp"
 #include "Item.hpp"
 #include "Rooms.hpp"
-#include "RoomText.hpp"
+#include "ItemText.hpp"
 #include <cstdarg>
 #include <iostream>
 #include <string>
@@ -10,6 +10,8 @@
 using namespace std;
 
 Item::Item() { return; }
+
+// Delet dis
 Item::Item(const string item_fmt, ...) {
   va_list fmt_args;
   va_start(fmt_args, item_fmt);
@@ -68,6 +70,18 @@ Item::Item(const string item_fmt, ...) {
   va_end(fmt_args);
 }
 
+int Item::getIdx(char ikey) const {
+  switch (ikey) {
+    case 'g':
+      return get_idx;
+      break;
+    case 'l':
+      return look_idx;
+      break;
+  }
+  return -1;
+}
+
 bool Item::itm_get(void) {
   bool got = (get_idx == got_idx) ? true : false;
 
@@ -93,6 +107,7 @@ void Item::itm_look(void) {
     look_idx++;
 }
 
+// Scroll
 Scroll::Scroll() {
   get_txt.push_back(MAIN_GOT_SCROLL);
   get_txt.push_back(MAIN_GET_GOT_SCROLL);
@@ -102,21 +117,112 @@ Scroll::Scroll() {
 }
 
 bool Scroll::itm_get(void) {
+  game->sayTxt(&get_txt[get_idx]);
+
   switch (get_idx) {
     case 0:
       zap = true;
+      score_mod_amt = 2;
       get_idx++;
+      break;
+    case 1:
+      score_mod_amt = -1;
       break;
     default:
       game->sayCmd(GET);
+      return false;
       break;
   }
-  game->sayTxt(&get_txt[get_idx]);
+  game->addToScore(score_mod_amt);
   return false;
 }
 
-
 void Scroll::itm_look(void) {
   look_idx = zap ? 1 : 0;
-  game->sayTxt(&look_txt[get_idx]);
+  game->sayTxt(&look_txt[look_idx]);
 }
+
+// Flask
+Flask::Flask() {
+  get_txt.push_back(MAIN_GET_FLASK);
+  get_txt.push_back(MAIN_GOT_FLASK);
+
+  look_txt.push_back(MAIN_LOOK_FLASK);
+}
+
+bool Flask::itm_get(void) {
+  switch (get_idx) {
+    case 2:
+      game->Over();
+      score_mod_amt = -1000;
+    default:
+      game->sayCmd(GET);
+      return false;
+      break;
+  }
+  game->sayTxt(&get_txt[get_idx]);
+  game->addToScore(score_mod_amt);
+  return false;
+}
+
+void Flask::itm_look(void) { game->sayTxt(&look_txt[look_idx]); }
+
+// Parapets
+Parapets::Parapets() { look_txt.push_back(N_LOOK_PARA); }
+
+void Parapets::itm_look(void) { game->sayTxt(&look_txt[look_idx]); }
+
+bool Parapets::itm_get(void) {
+  game->sayCmd(GET);
+  return false;
+}
+
+// Rope
+Rope::Rope() {
+  get_txt.push_back(N_GET_ROPE);
+  look_txt.push_back(N_LOOK_ROPE);
+}
+
+void Rope::itm_look(void) { game->sayTxt(&look_txt[look_idx]); }
+
+bool Rope::itm_get(void) {
+  score_mod_amt = -1;
+  game->sayTxt(&get_txt[get_idx]);
+  game->addToScore(score_mod_amt);
+
+  return false;
+}
+
+// Trinket
+Trinket::Trinket() {
+  get_txt.push_back(S_GET_TRINKT);
+  get_txt.push_back(S_GET_GOT_TRINKT);
+
+  look_txt.push_back(S_LOOK_TRINKT);
+  look_txt.push_back(S_LOOK_GOT_TRINKT);
+}
+
+bool Item::getOof() const { return oof; }
+
+bool Trinket::itm_get(void) {
+  bool got = false;
+  switch (get_idx) {
+    case 0:
+      get_idx++;
+      look_idx++;
+      score_mod_amt = 2;
+      got = true;
+    case 1:
+      score_mod_amt = -1;
+    default:
+      game->sayCmd(GET);
+      score_mod_amt = 0;
+      return false;
+      break;
+  }
+  game->sayTxt(&get_txt[get_idx]);
+  game->addToScore(score_mod_amt);
+  return got;
+}
+
+void Trinket::itm_look(void) { game->sayTxt(&look_txt[look_idx]); }

@@ -31,6 +31,10 @@ Game::Game() {
   }
 }
 
+bool Game::play(void) {
+  return false;
+}
+
 void Game::sayCmd(int cmd) const {
   sayTxt(&txt[cmd]);
 }
@@ -61,7 +65,7 @@ void Game::sayTxt(const string *_txt) const {
   putchar('\n');
 }
 
-inline void Game::lc(string *io) {
+void Game::lc(string *io) {
   transform(io->begin(), io->end(), io->begin(),
             [](unsigned char c){ return tolower(c); });
 }
