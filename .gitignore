@@ -1,0 +1,16 @@
+Makefile
+src/Makefile
+*.deps
+*.cache
+stamp-h1
+autom4te.cache
+config.h
+config.log
+config.status
+
+src/hospital
+*.o
+
+*.swp
+*.swo
+*.swn
