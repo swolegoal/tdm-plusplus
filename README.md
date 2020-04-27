@@ -2,6 +2,23 @@
 A lovingly-crafted C++ conversion/ripoff of Videlectrix' smash hit
 [**Thy Dungeonman**](http://homestarrunner.com/dungeonman.html).
 
+```
+ "#" # # # #   #"= # # #"# #"" #"" #"# #"# #=# #"# #"#  .   .
+  #  #"#  #    # # # # # # # # #"" # # # # # # #"# # # =#= =#=
+  "  " "  "    ""  """ " " """ """ """ " " " " " " " "  "   "
+
+                    /\      /\      /\
+                    ||/----\||      ||
+                    \_------_/      ||
+                     / o  o \       ||
+                     /  ||  \    o__||__o
+                     / ---- \     \____/
+                     /\/\/\/\       ||
+                                    oo
+
+         ~=Press the ENTER key to enter yon dungeon=~
+```
+
 ## STATUS
 Currently an unplayable work-in-progress.
 
