@@ -146,6 +146,10 @@ Trinket::Trinket() {
 
 void Trinket::itm_give(void) {
   if (game->room == game->rooms.at(DENNIS)) {
+    string give_txt = DEN_GIVE_TKT;
+    game->sayTxt(&give_txt);
+    game->win();
+    game->Over();
   } else {
     game->sayCmd(UNKNOWN);
   }
@@ -164,9 +168,12 @@ bool Trinket::itm_get(void) {
       look_idx++;
       score_mod_amt = 2;
       game->has_trinket = true;
+      game->trinket = this;
       got = true;
+      break;
     case 1:
       score_mod_amt = -1;
+      break;
     default:
       game->sayCmd(GET);
       score_mod_amt = 0;

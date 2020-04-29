@@ -15,7 +15,7 @@ class Item;
 class Trinket;
 
 enum game_txt { TITLE_SCREEN, INTRO_YOU, INTRO_ARE, INTRO_TDM,
-  DIE, DANCE, GET, GET_DAGGER, GO, LOOK, UNKNOWN, TALK, GIVE, SMELL
+  DIE, DANCE, GET, GET_DAGGER, GO, LOOK, UNKNOWN, TALK, GIVE, SMELL, PWD
 };
 
 class Game {
@@ -33,10 +33,14 @@ class Game {
 
     inline vector<string> getArgs(const string prompt);
     inline void sayArgs(vector<string> &args) const;
+    inline void sayArgs(vector<string> &args, int start) const;
     inline void sayArgs(vector<string> &args, int start, int end) const;
     void sayCmd(int cmd) const;
+    void sayCmd(int cmd, vector<string> &args) const;
     void sayTxt(const string *_txt) const;
-    inline int getScore() const;
+    void sayTxt(const string *_txt, vector<string> &args) const;
+    inline void sayAnA(vector<string> &args) const;
+    int getScore() const;
 
     void lc(string &io);
 
@@ -52,6 +56,7 @@ class Game {
     bool over = false;
     bool won = false;
     bool has_trinket = false;
+    Trinket *trinket;
 
     vector<Room *> rooms = {
       new MainRoom(), new NorthRoom(), new SouthRoom(), new DennisRoom()
@@ -59,7 +64,7 @@ class Game {
 
     Room *room;  // Current room
 
-    const string txt[14] = {
+    const string txt[15] = {
       // Title screen
       " \"#\" # # # #   #\"= # # #\"# #\"\" #\"\" #\"# #\"# #=# #\"# #\"#  .   .\n"
       "  #  #\"#  #    # # # # # # # # #\"\" # # # # # # #\"# # # =#= =#=\n"
@@ -110,8 +115,7 @@ class Game {
       "░\"░#░#░\"░\"░\"░\n░░░░░\"\"\"░░░░░\"\"\"░░░░░░\"\"\"░░░░░░░"
       "░░░\"░\"░░░░░\"░\"░░░\"░░░",
       // General commands
-      "That wasn't very smart. Your score was: %s. \n"
-      "Play again? [Y/N] ",
+      "That wasn't very smart. Your score was: %s.",
 
       "Thou shaketh it a little, and it feeleth all right.",
 
@@ -125,13 +129,15 @@ class Game {
       "It looketh pretty awesome.",
       "That does not computeth. Type HELP is thou needs of it.",
 
-      "Who is %n? Your new boyfriend? Somebody from work you\n"
+      "Who is %a? Your new boyfriend? Somebody from work you\n"
       "don't want me to meeteth?",
 
-      "Thou don'tst have %AN %ARGS to give. Go back to your\n"
+      "Thou don'tst have %A %ato give. Go back to your\n"
       "tiny life.",
 
-      "You smell a Wumpus."
+      "You smell a Wumpus.",
+
+      "tuxlovesyou/shameless_ripoffs/videlectrix/Thy\\ Dungeonman++"
     };
 };
 

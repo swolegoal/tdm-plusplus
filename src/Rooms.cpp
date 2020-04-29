@@ -43,12 +43,8 @@ void Room::parseCmd(vector<string> &args) {
   vector<string> myargs(args);
   for (string &arg : myargs) { game->lc(arg); }
 
-  /* // DEBUG
-   * for (string &arg : myargs) { cout << '"' << arg << "\" "; } // DEBUG
-   * cout << '\n'; // DEBUG
-   */
-
-  enum cmd_ops { DESC_OP = 1, DIE_OP, DANCE_OP, GET_OP, GO_OP, LOOK_OP, TALK_OP, GIVE_OP, SMELL_OP };
+  enum cmd_ops { DESC_OP = 1, DIE_OP, DANCE_OP, GET_OP, GO_OP, LOOK_OP,
+                 TALK_OP,GIVE_OP, SMELL_OP, SCORE_OP, PWD_OP };
 
   unordered_map<string, int> cmd_map = {
     {"help", DESC_OP},
@@ -57,17 +53,30 @@ void Room::parseCmd(vector<string> &args) {
     {"die", DIE_OP},
     {"dance", DANCE_OP},
     {"get", GET_OP},
+    {"gimme", GET_OP},
+    {"grab", GET_OP},
+    {"burgle", GET_OP},
+    {"snatch", GET_OP},
+    {"steal", GET_OP},
+    {"obtain", GET_OP},
+    {"acquire", GET_OP},
     {"take", GET_OP},
+    {"yeet", GET_OP},
     {"talk", TALK_OP},
     {"give", GIVE_OP},
     {"smell", SMELL_OP},
     {"sniff", SMELL_OP},
     {"go", GO_OP},
-    {"not", GO_OP},
+    {"score", SCORE_OP},
+    {"pwd", PWD_OP},
   };
+
+  if (items["jimberjam"])
+    cmd_map["not"] = GO_OP;
+
   {
     auto cmd_id = cmd_map[myargs.at(0)];
-    if (cmd_id > 1) {
+    if (cmd_id) {
       switch (cmd_id) {
         case DESC_OP:
           desc();
@@ -87,40 +96,107 @@ void Room::parseCmd(vector<string> &args) {
         case DANCE_OP:
           game->sayCmd(DANCE);
           break;
-        case GET_OP:
+        case GET_OP: {
+          Item *getter = NULL;
           if (args.size() > 1) {
-            Item *getter = items[myargs.at(1)];
-            if (getter) {
-              getter->itm_get();
+            unordered_map<string, bool> ye_yon = {
+              {"ye", true},
+              {"yon", true},
+              {"thy", true},
+              {"the", true},
+              {"that", true},
+              {"my", true},
+              {"yonder", true}
+            };
+            if (args.size() >= 3 && ye_yon[myargs.at(1)]) {
+              getter = items[myargs.at(2)];
+              if (getter) {
+                getter->itm_get();
+              } else {
+                game->sayCmd(GET);
+              }
+            } else if (myargs.at(1) == "dagger") {
+              game->sayCmd(GET_DAGGER);
+              game->addToScore(25);
             } else {
-              game->sayCmd(LOOK);
+              getter = items[myargs.at(1)];
+              if (getter) {
+                getter->itm_get();
+              } else {
+                game->sayCmd(GET);
+              }
             }
           } else {
             game->sayCmd(UNKNOWN);
           }
           break;
+        }
         case GO_OP:
-          if (args.size() > 1) {
+          if (myargs.size() > 1) {
             Room *r = valid_rooms[myargs.at(1)];
             if (r) {
-              game->room = r;
+              if (items["jimberjam"]) {
+                if (myargs.at(0) ==  "not") {
+                  game->room = r;
+                  game->room->enter();
+                  game->room->desc();
+                } else {
+                  game->sayCmd(UNKNOWN);
+                }
+              } else {
+                game->room = r;
+                game->room->enter();
+                game->room->desc();
+              }
             } else {
               game->sayCmd(GO);
             }
           } else {
-            game->sayCmd(GO);
+            game->sayCmd(UNKNOWN);
           }
           break;
         case TALK_OP:
-          game->sayCmd(TALK);
+          if (!items["jimberjam"] && myargs.size() <= 1) {
+            game->sayCmd(UNKNOWN);
+          } else if (items["jimberjam"]) {
+            if (myargs.at(1) == "dennis" || myargs.size() == 1) {
+              string den_talk = DEN_TALK;
+              game->sayTxt(&den_talk);
+            } else {
+              game->sayCmd(TALK, args);
+            }
+          } else {
+            game->sayCmd(TALK, args);
+          }
           break;
         case GIVE_OP:
+          if (myargs.size() >= 2) {
+            if (!game->has_trinket) {
+              game->sayCmd(GIVE, args);
+            } else {
+              if (items["jimberjam"]) {
+                if (myargs.at(1) == "trinket")
+                  game->trinket->itm_give();
+                else
+                  game->sayCmd(GIVE, args);
+              }
+            }
+          } else {
+            game->sayCmd(UNKNOWN);
+          }
+          break;
+        case SCORE_OP:
+          cout << "\nThy score: " << game->getScore() <<  '\n';
           break;
         case SMELL_OP:
+          game->sayCmd(SMELL);
           break;
         case DIE_OP:
           game->sayCmd(DIE);
           game->Over();
+          break;
+        case PWD_OP:
+          game->sayCmd(PWD);
           break;
         default:
           break;
@@ -143,7 +219,7 @@ MainRoom::MainRoom() {
   items["scroll"] = new Scroll();
   items["flask"] = new Flask();
 
-  string room_desc = MAIN_DESC;
+  room_desc = MAIN_DESC;
 }
 
 void MainRoom::setupRoomMaps(void) {
@@ -156,7 +232,7 @@ NorthRoom::NorthRoom() {
   items["parapets"] = new Parapets();
   items["rope"] = new Rope();
 
-  string room_desc = N_DESC;
+  room_desc = N_DESC;
 
 }
 
@@ -167,7 +243,7 @@ void NorthRoom::setupRoomMaps(void) {
 SouthRoom::SouthRoom() {
   items["trinket"] = new Trinket();
 
-  string room_desc = S_DESC;
+  room_desc = S_DESC;
 
   lookies[0] = S_LOOK_HELP;
   lookies[1] = S_LOOK_HELP2;
@@ -185,6 +261,7 @@ void SouthRoom::desc() {
   switch (tk_idx) {
     case 0: {
       nonetheless ? game->sayTxt(&lookies[0]) : game->sayTxt(&room_desc);
+      nonetheless = true;
       break;
     }
     case 1: {
@@ -197,8 +274,7 @@ void SouthRoom::desc() {
 
 DennisRoom::DennisRoom() {
   items["jimberjam"] = new Jimberjam();
-
-  string room_desc = DEN_DESC;
+  room_desc = DEN_DESC;
 }
 
 void DennisRoom::setupRoomMaps(void) {

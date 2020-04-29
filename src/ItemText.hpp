@@ -29,7 +29,7 @@
     "A great shaking begins.  The dungeon ceiling \n" \
     "collapses down on you, crushing you in twain.\n" \
     "Apparently, this was a load-bearing FLASK. Your\n" \
-    "score was: %s Play \n again? [Y/N] "
+    "score was: %s"
 
 // North of main dungeon room
 #define N_LOOK_PARA \
@@ -43,8 +43,7 @@
     "It glows a mustard red and smells like a public privy.\n" \
     "The ROPE wraps round your neck and hangs you from\n" \
     "parapets. With your last breath, you wonder what\n" \
-    "parapets are. GAME OVER. Your score was: %s. Play\n" \
-    "again? (Y/N)"
+    "parapets are. GAME OVER. Your score was: %s." \
 
 // South of main dungeon room
 #define S_LOOK_TRINKT  "Quit looking! Just get it already."

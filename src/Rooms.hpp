@@ -16,10 +16,10 @@ class Room: public GameWumpus {
 
   public:
     void setupItemWumpii(void);
-    void setupRoomMaps(void);
+    virtual void setupRoomMaps(void);
 
-    void desc();
-    void enter();  // Allows setup of room-entering events
+    virtual void desc();
+    virtual void enter();  // Allows setup of room-entering events
 
     bool getItem(string key);
     void lookItem(string key);
@@ -37,24 +37,24 @@ class Room: public GameWumpus {
 class MainRoom: public Room {
   public:
     MainRoom();
-    void setupRoomMaps(void);
+    virtual void setupRoomMaps(void);
 };
 
 // NORTH OF MAIN ROOM
 class NorthRoom: public Room {
   public:
     NorthRoom();
-    void setupRoomMaps(void);
+    virtual void setupRoomMaps(void);
 };
 
 // SOUTH OF MAIN ROOM
 class SouthRoom: public Room {
   public:
     SouthRoom();
-    void setupRoomMaps(void);
+    virtual void setupRoomMaps(void);
 
-    void enter();
-    void desc();
+    virtual void enter();
+    virtual void desc();
 
   protected:
     bool nonetheless = false;
@@ -65,10 +65,7 @@ class SouthRoom: public Room {
 class DennisRoom: public Room {
   public:
     DennisRoom();
-    void setupRoomMaps(void);
-
-    void enter();
-    void desc();
+    virtual void setupRoomMaps(void);
 };
 
 #endif  // ROOMS_HPP

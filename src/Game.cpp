@@ -31,17 +31,6 @@ Game::Game() {
     r->gg(this);
     r->setupItemWumpii();
     r->setupRoomMaps();
-    /* // Testing code (to delete)
-     * for (auto &valid : r->valid_rooms ) {
-     *   cout << valid.first << ": " << valid.second << '\n';
-     * }
-     * for (auto &item: r->items) {
-     *   r->lookItem(item.first);
-     * }
-     */
-
-    r->desc();
-    cout << r->room_desc << '\n';
   }
 }
 
@@ -54,6 +43,14 @@ inline vector<string> Game::getArgs(const string prompt) {
   while (line.length() == 0) {
     cout << prompt;
     getline(cin, line);
+
+    if (cin.eof()) {
+      cout << endl;
+      exit(0);
+    } else if (cin.bad()) {
+      cout << endl;
+      exit(1);
+    }
   }
 
   istringstream astream(line);
@@ -78,7 +75,6 @@ bool Game::play(void) {
   }
 
   if (!won) {
-    cout << "here\n";
     enum yes_no { YES = 1, NO };
     unordered_map<string, int> yn_map = {
       {"y", YES},
@@ -87,12 +83,19 @@ bool Game::play(void) {
       {"n", NO},
       {"no", NO},
     };
-    vector<string> args = getArgs("");
-    int yn = yn_map[args.at(0)];
-    if (yn) {
-      switch (yn) {
-        case YES:
-          return true;
+    while (true) {
+      vector<string> args = getArgs("Play again? [Y/N] ");
+      for (string &arg : args) { lc(arg); }
+      if (args.size() > 0) {
+        int yn = yn_map[args.at(0)];
+        if (yn && args.size() > 0) {
+          switch (yn) {
+            case YES:
+              return true;
+            case NO:
+              return false;
+          }
+        }
       }
     }
   }
@@ -100,8 +103,14 @@ bool Game::play(void) {
   return false;
 }
 
+int Game::getScore() const { return score; }
+
 void Game::sayCmd(int cmd) const {
   sayTxt(&txt[cmd]);
+}
+
+void Game::sayCmd(int cmd, vector<string> &args) const {
+  sayTxt(&txt[cmd], args);
 }
 
 inline void Game::sayArgs(vector<string> &args) const {
@@ -113,15 +122,43 @@ inline void Game::sayArgs(vector<string> &args, int start, int end) const {
            [](auto &argp){ cout << argp << ' '; });
 }
 
+inline void Game::sayArgs(vector<string> &args, int start) const {
+  for_each(args.begin() + start, args.end(),
+           [](auto &argp){ cout << argp << ' '; });
+}
+
 void Game::sayTxt(const string *_txt) const {
+  vector<string> args = { "", "" };
+  sayTxt(_txt, args);
+}
+
+inline void Game::sayAnA(vector<string> &args) const {
+  char cons_vowel = args.at(1).at(0);
+  switch (cons_vowel) {
+    case 'a': case 'A':
+    case 'e': case 'E':
+    case 'i': case 'I':
+    case 'o': case 'O':
+    case 'u': case 'U':
+      cout << "an";
+      return;
+  }
+  cout << 'a';
+}
+
+void Game::sayTxt(const string *_txt, vector<string> &args) const {
   for (auto c = _txt->begin(); c != _txt->end(); ++c) {
     if (*c == '%') {
       switch (*++c) {
         case ('s'):
           cout << score;
           break;
-        // case ('a'):
-        //   break;
+        case ('A'):
+          sayAnA(args);
+          break;
+        case ('a'):
+          sayArgs(args, 1);
+          break;
       }
     } else {
       putchar(*c);
