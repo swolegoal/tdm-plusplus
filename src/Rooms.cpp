@@ -159,7 +159,7 @@ void Room::parseCmd(vector<string> &args) {
           if (!items["jimberjam"] && myargs.size() <= 1) {
             game->sayCmd(UNKNOWN);
           } else if (items["jimberjam"]) {
-            if (myargs.at(1) == "dennis" || myargs.size() == 1) {
+            if (myargs.size() == 1 || myargs.at(1) == "dennis") {
               string den_talk = DEN_TALK;
               game->sayTxt(&den_talk);
             } else {
