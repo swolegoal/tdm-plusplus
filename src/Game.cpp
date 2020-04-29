@@ -5,10 +5,11 @@
 #include <chrono>
 #include <cstdio>
 #include <iostream>
-#include <map>
+#include <regex>
+#include <sstream>
 #include <string>
 #include <thread>
-#include <regex>
+#include <unordered_map>
 
 using namespace std;
 
@@ -28,10 +29,74 @@ Game::Game() {
 
   for (Room *r : rooms) {
     r->gg(this);
+    r->setupItemWumpii();
+    r->setupRoomMaps();
+    /* // Testing code (to delete)
+     * for (auto &valid : r->valid_rooms ) {
+     *   cout << valid.first << ": " << valid.second << '\n';
+     * }
+     * for (auto &item: r->items) {
+     *   r->lookItem(item.first);
+     * }
+     */
+
+    r->desc();
+    cout << r->room_desc << '\n';
   }
 }
 
+void Game::win(void) { won = true; }
+
+inline vector<string> Game::getArgs(const string prompt) {
+  vector<string> args;
+  string line = "";
+
+  while (line.length() == 0) {
+    cout << prompt;
+    getline(cin, line);
+  }
+
+  istringstream astream(line);
+  while (true) {
+    string arg;
+    if (astream >> arg)
+      args.push_back(arg);
+    else
+      break;
+  }
+  return args;
+}
+
 bool Game::play(void) {
+  room = rooms.at(0);
+  room->enter();
+  room->desc();
+
+  while (!over) {
+    vector<string> args = getArgs("\nWhat wouldst thou deau?\n> ");
+    room->parseCmd(args);
+  }
+
+  if (!won) {
+    cout << "here\n";
+    enum yes_no { YES = 1, NO };
+    unordered_map<string, int> yn_map = {
+      {"y", YES},
+      {"ye", YES},
+      {"yes", YES},
+      {"n", NO},
+      {"no", NO},
+    };
+    vector<string> args = getArgs("");
+    int yn = yn_map[args.at(0)];
+    if (yn) {
+      switch (yn) {
+        case YES:
+          return true;
+      }
+    }
+  }
+
   return false;
 }
 
@@ -55,7 +120,7 @@ void Game::sayTxt(const string *_txt) const {
         case ('s'):
           cout << score;
           break;
-        // case ('s'):
+        // case ('a'):
         //   break;
       }
     } else {
@@ -65,8 +130,8 @@ void Game::sayTxt(const string *_txt) const {
   putchar('\n');
 }
 
-void Game::lc(string *io) {
-  transform(io->begin(), io->end(), io->begin(),
+void Game::lc(string &io) {
+  transform(io.begin(), io.end(), io.begin(),
             [](unsigned char c){ return tolower(c); });
 }
 

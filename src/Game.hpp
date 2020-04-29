@@ -3,8 +3,8 @@
 
 #include "Rooms.hpp"
 #include <functional>
-#include <map>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 using namespace std;
@@ -12,37 +12,52 @@ using namespace std;
 class GameWumpus;
 class Room;
 class Item;
+class Trinket;
 
 enum game_txt { TITLE_SCREEN, INTRO_YOU, INTRO_ARE, INTRO_TDM,
   DIE, DANCE, GET, GET_DAGGER, GO, LOOK, UNKNOWN, TALK, GIVE, SMELL
 };
 
 class Game {
+  friend void Trinket::itm_give(void);
+  friend bool Trinket::itm_get(void);
+  friend void Room::parseCmd(vector<string> &args);
+  friend void MainRoom::setupRoomMaps(void);
+  friend void NorthRoom::setupRoomMaps(void);
+  friend void SouthRoom::setupRoomMaps(void);
+  friend void DennisRoom::setupRoomMaps(void);
+
   public:
     Game();
     //~Game();  // Soon...
 
-    inline vector<string> getArgs();  // Canst this be thy way?
+    inline vector<string> getArgs(const string prompt);
     inline void sayArgs(vector<string> &args) const;
     inline void sayArgs(vector<string> &args, int start, int end) const;
     void sayCmd(int cmd) const;
     void sayTxt(const string *_txt) const;
     inline int getScore() const;
 
-    void lc(string *io);
+    void lc(string &io);
 
     bool play(void);
 
     void addToScore(int amt);
     void Over();
+    void win(void);
+
 
   private:
     int score;
     bool over = false;
+    bool won = false;
+    bool has_trinket = false;
 
-    enum room_key { MAIN_ROOM, NORTH, SOUTH, DENNIS };
-    vector<Room *> rooms = { new MainRoom(), new NorthRoom() };
-    Room *room = rooms.at(0);  // Current room
+    vector<Room *> rooms = {
+      new MainRoom(), new NorthRoom(), new SouthRoom(), new DennisRoom()
+    };
+
+    Room *room;  // Current room
 
     const string txt[14] = {
       // Title screen

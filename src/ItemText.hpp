@@ -29,7 +29,7 @@
     "A great shaking begins.  The dungeon ceiling \n" \
     "collapses down on you, crushing you in twain.\n" \
     "Apparently, this was a load-bearing FLASK. Your\n" \
-    "score was: %SCORE Play \n again? [Y/N] "
+    "score was: %s Play \n again? [Y/N] "
 
 // North of main dungeon room
 #define N_LOOK_PARA \
@@ -43,7 +43,7 @@
     "It glows a mustard red and smells like a public privy.\n" \
     "The ROPE wraps round your neck and hangs you from\n" \
     "parapets. With your last breath, you wonder what\n" \
-    "parapets are. GAME OVER. Your score was: %SCORE. Play\n" \
+    "parapets are. GAME OVER. Your score was: %s. Play\n" \
     "again? (Y/N)"
 
 // South of main dungeon room
@@ -70,7 +70,7 @@
     "this new knowledge, ye escapes from yon dungeon in\n" \
     "order to search for new dungeons and to remain... THY\n" \
     "DUNGEONMAN!! You hath won! Congraturation!! Your score\n" \
-    "was: %SCORE"
+    "was: %s"
 
 #define DEN_GIVE2_TKT \
     "Thou don'tst have a trinket to give. Go back to your\n" \

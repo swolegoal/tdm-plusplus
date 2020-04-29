@@ -9,7 +9,6 @@ int main(void) {
   while (play_again) {
     game = new Game();
 
-    // may implement a std::pair as return type later
     play_again = game->play();
 
     // delete game;

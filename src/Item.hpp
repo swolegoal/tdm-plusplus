@@ -21,10 +21,10 @@ class GameWumpus {
 class Item : public GameWumpus {
   public:
     Item();
-    Item(const string item_fmt, ...);
 
-    bool itm_get(void);
-    void itm_look(void);
+    virtual bool itm_get(void) = 0;
+    virtual void itm_look(void);
+    virtual void itm_give(void);
 
     int getIdx(char ikey) const;
     bool getOof() const;
@@ -52,8 +52,8 @@ class Scroll: public Item {
   public:
     Scroll();
 
-    bool itm_get(void);
-    void itm_look(void);
+    virtual bool itm_get(void);
+    virtual void itm_look(void);
 
   private:
     bool zap = false;
@@ -63,8 +63,8 @@ class Flask: public Item {
   public:
     Flask();
 
-    bool itm_get(void);
-    void itm_look(void);
+    virtual bool itm_get(void);
+    virtual void itm_look(void);
 };
 
 // North of main dungeon room
@@ -72,16 +72,16 @@ class Parapets: public Item {
   public:
     Parapets();
 
-    bool itm_get(void);
-    void itm_look(void);
+    virtual bool itm_get(void);
+    virtual void itm_look(void);
 };
 
 class Rope: public Item {
   public:
     Rope();
 
-    bool itm_get(void);
-    void itm_look(void);
+    virtual bool itm_get(void);
+    virtual void itm_look(void);
 };
 
 // South of main dungeon room
@@ -89,10 +89,18 @@ class Trinket: public Item {
   public:
     Trinket();
 
-    bool itm_get(void);
-    void itm_look(void);
+    virtual bool itm_get(void);
+    virtual void itm_look(void);
+    virtual void itm_give(void);
 };
 
 // Dennis
+class Jimberjam: public Item {
+  public:
+    Jimberjam();
+
+    virtual bool itm_get(void);
+    virtual void itm_look(void);
+};
 
 #endif  // ITEM_HPP

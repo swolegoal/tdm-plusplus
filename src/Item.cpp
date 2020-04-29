@@ -11,64 +11,7 @@ using namespace std;
 
 Item::Item() { return; }
 
-// Delet dis
-Item::Item(const string item_fmt, ...) {
-  va_list fmt_args;
-  va_start(fmt_args, item_fmt);
-
-  {
-    int counter = 0;
-    for (const char &fc : item_fmt) {
-      switch (fc) {
-        // Key for a "non-got" get message
-        case 'g': {
-          get_txt.push_back(va_arg(fmt_args, string));
-          break;
-        }
-        // Key for a "got" get message
-        // expects an integer of the amount to add to your score
-        case 'G': {
-          got_idx = counter;
-          get_txt.push_back(va_arg(fmt_args, string));
-          got_amt = va_arg(fmt_args, int);
-          break;
-        }
-        // Key for a "got" get that kills you;
-        // expects an integer of the amount to add to your score
-        case 'K': {
-          got_idx = counter;
-          kill_idx = counter;
-          get_txt.push_back(va_arg(fmt_args, string));
-          kill_amt = va_arg(fmt_args, int);
-          break;
-        }
-        // Key for a "non-got" get that adds to your score;
-        // expects an integer of the amount to add to your score
-        case 's': {
-          score_mod_idx = counter;
-          get_txt.push_back(va_arg(fmt_args, string));
-          score_mod_amt = va_arg(fmt_args, int);
-          break;
-        }
-        /* Key for look type flag (int)
-         * 0: simple (go through each look string without a care in the world)
-         * 1: got-based (iterator starts once item is gotten)
-         */
-        case 'L': {
-          look_txt.push_back(va_arg(fmt_args, string));
-          break;
-        }
-        // Key for look string
-        case 'l': {
-          look_txt.push_back(va_arg(fmt_args, string));
-          break;
-        }
-      }
-      counter++;
-    }
-  }
-  va_end(fmt_args);
-}
+bool Item::getOof() const { return oof; }
 
 int Item::getIdx(char ikey) const {
   switch (ikey) {
@@ -82,23 +25,7 @@ int Item::getIdx(char ikey) const {
   return -1;
 }
 
-bool Item::itm_get(void) {
-  bool got = (get_idx == got_idx) ? true : false;
-
-  cout << get_txt.at(get_idx) << '\n';
-
-  if (get_idx == kill_idx) {
-      game->addToScore(kill_amt);
-      game->Over();  // Sets the game over flag
-  } else if (get_idx == score_mod_idx) {
-      game->addToScore(score_mod_amt);
-  }
-
-  if ((get_idx + 1) < get_txt.size())
-    get_idx++;
-
-  return got;
-}
+void Item::itm_give(void) { game->sayCmd(UNKNOWN); }
 
 void Item::itm_look(void) {
   cout << look_txt.at(look_idx) << '\n';
@@ -151,16 +78,31 @@ Flask::Flask() {
 }
 
 bool Flask::itm_get(void) {
-  switch (get_idx) {
-    case 2:
-      game->Over();
-      score_mod_amt = -1000;
-    default:
-      game->sayCmd(GET);
-      return false;
-      break;
+  {
+    int actual_idx;
+
+    switch (get_idx) {
+      case 0:
+        actual_idx = 0;
+        score_mod_amt = 1;
+        get_idx++;
+        break;
+      case 1:
+        actual_idx = 0;
+        get_idx++;
+        score_mod_amt = 1;
+        break;
+      case 2:
+        actual_idx = 1;
+        game->Over();
+        score_mod_amt = -1000;
+        break;
+      default:
+        game->sayCmd(GET);
+        break;
+    }
+    game->sayTxt(&get_txt[actual_idx]);
   }
-  game->sayTxt(&get_txt[get_idx]);
   game->addToScore(score_mod_amt);
   return false;
 }
@@ -202,15 +144,26 @@ Trinket::Trinket() {
   look_txt.push_back(S_LOOK_GOT_TRINKT);
 }
 
-bool Item::getOof() const { return oof; }
+void Trinket::itm_give(void) {
+  if (game->room == game->rooms.at(DENNIS)) {
+  } else {
+    game->sayCmd(UNKNOWN);
+  }
+}
+
+void Trinket::itm_look(void) { game->sayTxt(&get_txt[get_idx]); }
 
 bool Trinket::itm_get(void) {
   bool got = false;
+
+  game->sayTxt(&get_txt[get_idx]);
+
   switch (get_idx) {
     case 0:
       get_idx++;
       look_idx++;
       score_mod_amt = 2;
+      game->has_trinket = true;
       got = true;
     case 1:
       score_mod_amt = -1;
@@ -220,9 +173,13 @@ bool Trinket::itm_get(void) {
       return false;
       break;
   }
-  game->sayTxt(&get_txt[get_idx]);
   game->addToScore(score_mod_amt);
   return got;
 }
 
-void Trinket::itm_look(void) { game->sayTxt(&look_txt[look_idx]); }
+// Jimberjam
+Jimberjam::Jimberjam() { look_txt.push_back(DEN_LOOK_JIM); }
+
+bool Jimberjam::itm_get(void) { game->sayCmd(GET); return false; }
+
+void Jimberjam::itm_look(void) { game->sayTxt(&look_txt[look_idx]); }

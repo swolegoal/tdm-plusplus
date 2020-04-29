@@ -3,16 +3,20 @@
 
 #include "Game.hpp"
 #include "Item.hpp"
-#include "RoomText.hpp"
 #include <functional>
-#include <map>
 #include <string>
+#include <unordered_map>
 
 using namespace std;
 
+enum room_key { MAIN_ROOM, NORTH, SOUTH, DENNIS };
+
 class Room: public GameWumpus {
+  friend class Game;
+
   public:
-    Room();
+    void setupItemWumpii(void);
+    void setupRoomMaps(void);
 
     void desc();
     void enter();  // Allows setup of room-entering events
@@ -20,56 +24,51 @@ class Room: public GameWumpus {
     bool getItem(string key);
     void lookItem(string key);
 
+    void parseCmd(vector<string> &args);
+
   protected:
-    map<string, Item*> items;
-    const string room_desc;
+    unordered_map<string, Item*> items;
+    string room_desc;
+    //unordered_map<string, int> valid_rooms;
+    unordered_map<string, Room*> valid_rooms;
 };
 
 // MAIN ROOM
 class MainRoom: public Room {
   public:
-    using Room::Room;  // Useless use of the word using, thanks C++
-
-  protected:
-    map<string, Item*> items = {
-      { "scroll", new Scroll() },
-      { "flask", new Flask() }
-    };
-    const string room_desc = MAIN_DESC;
+    MainRoom();
+    void setupRoomMaps(void);
 };
 
 // NORTH OF MAIN ROOM
 class NorthRoom: public Room {
   public:
-    using Room::Room;  // Useless use of the word using, thanks C++
-
-  protected:
-    map<string, Item*> items = {
-      { "parapets", new Parapets() },
-      { "rope", new Rope() }
-    };
-    const string room_desc = N_DESC;
+    NorthRoom();
+    void setupRoomMaps(void);
 };
 
 // SOUTH OF MAIN ROOM
 class SouthRoom: public Room {
   public:
-    using Room::Room;  // Useless use of the word using, thanks C++
+    SouthRoom();
+    void setupRoomMaps(void);
 
     void enter();
     void desc();
 
   protected:
-    map<string, Item*> items = {
-      { "trinket", new Trinket() }
-    };
-    const string room_desc = S_DESC;
-
-    // Special
     bool nonetheless = false;
-    const string lookies[3] = { S_LOOK_HELP, S_LOOK_HELP2, S_LOOK_HELP3 };
+    string lookies[3];
 };
 
 // DENNIS
+class DennisRoom: public Room {
+  public:
+    DennisRoom();
+    void setupRoomMaps(void);
+
+    void enter();
+    void desc();
+};
 
 #endif  // ROOMS_HPP
