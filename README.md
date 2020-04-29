@@ -20,7 +20,7 @@ A lovingly-crafted C++ conversion/ripoff of Videlectrix' smash hit
 ```
 
 ## STATUS
-Currently an unplayable work-in-progress.
+Working, but not yet 100% accurate to the original.
 
 ## DEPENDENCIES
 - A fairly recent C++ compiler and standard library
