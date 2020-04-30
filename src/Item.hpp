@@ -33,9 +33,6 @@ class Item : public GameWumpus {
     int got_idx = -1;  // When a get gives your inventory an item
     int got_amt = 0;
 
-    int score_mod_idx = -1;
-    int score_mod_amt = 0;
-
     int get_idx = 0;
     int look_idx = 0;
 

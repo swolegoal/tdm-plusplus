@@ -45,6 +45,7 @@ Scroll::Scroll() {
 
 bool Scroll::itm_get(void) {
   game->sayTxt(&get_txt[get_idx]);
+  int score_mod_amt = 0;
 
   switch (get_idx) {
     case 0:
@@ -79,31 +80,26 @@ Flask::Flask() {
 
 bool Flask::itm_get(void) {
   {
-    int actual_idx;
+    int txt_idx = 0;
 
     switch (get_idx) {
       case 0:
-        actual_idx = 0;
-        score_mod_amt = 1;
-        get_idx++;
-        break;
       case 1:
-        actual_idx = 0;
+        txt_idx = 0;
         get_idx++;
-        score_mod_amt = 1;
+        game->addToScore(1);
         break;
       case 2:
-        actual_idx = 1;
+        txt_idx = 1;
         game->Over();
-        score_mod_amt = -1000;
+        game->addToScore(-1000);
         break;
       default:
         game->sayCmd(GET);
         break;
     }
-    game->sayTxt(&get_txt[actual_idx]);
+    game->sayTxt(&get_txt[txt_idx]);
   }
-  game->addToScore(score_mod_amt);
   return false;
 }
 
@@ -128,9 +124,9 @@ Rope::Rope() {
 void Rope::itm_look(void) { game->sayTxt(&look_txt[look_idx]); }
 
 bool Rope::itm_get(void) {
-  score_mod_amt = -1;
+  game->addToScore(-1);
   game->sayTxt(&get_txt[get_idx]);
-  game->addToScore(score_mod_amt);
+  game->Over();
 
   return false;
 }
@@ -159,6 +155,7 @@ void Trinket::itm_look(void) { game->sayTxt(&get_txt[get_idx]); }
 
 bool Trinket::itm_get(void) {
   bool got = false;
+  int score_mod_amt = 0;
 
   game->sayTxt(&get_txt[get_idx]);
 
