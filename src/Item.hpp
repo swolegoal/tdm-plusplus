@@ -32,15 +32,13 @@ class Item : public GameWumpus {
   protected:
     int got_idx = -1;  // When a get gives your inventory an item
     int got_amt = 0;
-    int kill_idx = -1;
-    int kill_amt = 0;
+
     int score_mod_idx = -1;
     int score_mod_amt = 0;
 
     int get_idx = 0;
     int look_idx = 0;
 
-    int look_type = 0;
     bool oof = false;
 
     vector<string> get_txt;

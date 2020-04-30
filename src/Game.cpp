@@ -119,12 +119,12 @@ inline void Game::sayArgs(vector<string> &args) const {
 
 inline void Game::sayArgs(vector<string> &args, int start, int end) const {
   for_each(args.begin() + start, args.begin() + end,
-           [](auto &argp){ cout << argp << ' '; });
+           [](string &argp){ cout << argp << ' '; });
 }
 
 inline void Game::sayArgs(vector<string> &args, int start) const {
   for_each(args.begin() + start, args.end(),
-           [](auto &argp){ cout << argp << ' '; });
+           [](string &argp){ cout << argp << ' '; });
 }
 
 void Game::sayTxt(const string *_txt) const {
