@@ -3,7 +3,6 @@
 #include "Rooms.hpp"
 #include "RoomText.hpp"
 #include <functional>
-#include <iostream>
 #include <string>
 #include <unordered_map>
 
@@ -185,9 +184,11 @@ void Room::parseCmd(vector<string> &args) {
             game->sayCmd(UNKNOWN);
           }
           break;
-        case SCORE_OP:
-          cout << "\nThy score: " << game->getScore() <<  '\n';
+        case SCORE_OP: {
+          string score_txt = "\nThy score: %s";
+          game->sayTxt(&score_txt);
           break;
+        }
         case SMELL_OP:
           game->sayCmd(SMELL);
           break;
