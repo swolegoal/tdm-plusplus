@@ -85,9 +85,11 @@ bool Flask::itm_get(void) {
       case 0:
         actual_idx = 0;
         score_mod_amt = 1;
+        get_idx++;
         break;
       case 1:
         actual_idx = 0;
+        get_idx++;
         score_mod_amt = 1;
         break;
       case 2:
