@@ -193,6 +193,7 @@ void Room::parseCmd(vector<string> &args) {
           game->sayCmd(SMELL);
           break;
         case DIE_OP:
+          game->addToScore(-100);
           game->sayCmd(DIE);
           game->Over();
           break;

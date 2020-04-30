@@ -1,5 +1,5 @@
 #include "Game.hpp"
-//#include "Rooms.hpp"
+#include "Rooms.hpp"
 #include <algorithm>
 #include <cctype>
 #include <chrono>
