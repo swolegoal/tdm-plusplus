@@ -3,7 +3,6 @@
 #include "Rooms.hpp"
 #include "ItemText.hpp"
 #include <cstdarg>
-#include <iostream>
 #include <string>
 #include <vector>
 
@@ -28,7 +27,7 @@ int Item::getIdx(char ikey) const {
 void Item::itm_give(void) { game->sayCmd(UNKNOWN); }
 
 void Item::itm_look(void) {
-  cout << look_txt.at(look_idx) << '\n';
+  game->sayTxt(&look_txt[look_idx]);
 
   if ((look_idx + 1) < look_txt.size())
     look_idx++;
