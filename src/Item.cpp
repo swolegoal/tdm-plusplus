@@ -169,6 +169,7 @@ bool Trinket::itm_get(void) {
       break;
     case 1:
       score_mod_amt = -1;
+      oof = true;
       break;
     default:
       game->sayCmd(GET);
