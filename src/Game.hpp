@@ -119,7 +119,7 @@ class Game {
 
       "Thou shaketh it a little, and it feeleth all right.",
 
-      "Thou cannotst get that. Quit making stuffeth up!",
+      "Thou cannotst %v that. Quit making stuffeth up!",
 
       "Yeah, okay",
 
@@ -129,10 +129,10 @@ class Game {
       "It looketh pretty awesome.",
       "That does not computeth. Type HELP is thou needs of it.",
 
-      "Who is %a? Your new boyfriend? Somebody from work you\n"
+      "Who is%a? Your new boyfriend? Somebody from work you\n"
       "don't want me to meeteth?",
 
-      "Thou don'tst have %A %ato give. Go back to your\n"
+      "Thou don'tst have %A%a to give. Go back to your\n"
       "tiny life.",
 
       "You smell a Wumpus.",

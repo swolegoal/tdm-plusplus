@@ -5,7 +5,6 @@
 #include <chrono>
 #include <cstdio>
 #include <iostream>
-#include <regex>
 #include <sstream>
 #include <string>
 #include <thread>
@@ -124,7 +123,7 @@ inline void Game::sayArgs(vector<string> &args, int start, int end) const {
 
 inline void Game::sayArgs(vector<string> &args, int start) const {
   for_each(args.begin() + start, args.end(),
-           [](string &argp){ cout << argp << ' '; });
+           [](string &argp){ cout << ' ' << argp; });
 }
 
 void Game::sayTxt(const string *_txt) const {
@@ -150,6 +149,9 @@ void Game::sayTxt(const string *_txt, vector<string> &args) const {
   for (auto c = _txt->begin(); c != _txt->end(); ++c) {
     if (*c == '%') {
       switch (*++c) {
+        case ('%'):
+          cout << '%';
+          break;
         case ('s'):
           cout << score;
           break;
@@ -159,6 +161,14 @@ void Game::sayTxt(const string *_txt, vector<string> &args) const {
         case ('a'):
           sayArgs(args, 1);
           break;
+        case ('v'): {
+          string verb = args.at(0);
+          if (verb == "gimme")
+            verb = "get";
+
+          cout << verb;
+          break;
+        }
       }
     } else {
       putchar(*c);

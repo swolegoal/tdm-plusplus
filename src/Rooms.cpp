@@ -52,15 +52,22 @@ void Room::parseCmd(vector<string> &args) {
     {"die", DIE_OP},
     {"dance", DANCE_OP},
     {"get", GET_OP},
+    {"getteth", GET_OP},
+    {"geteth", GET_OP},
     {"gimme", GET_OP},
     {"grab", GET_OP},
     {"burgle", GET_OP},
+    {"fetch", GET_OP},
+    {"fetcheth", GET_OP},
     {"snatch", GET_OP},
     {"steal", GET_OP},
     {"obtain", GET_OP},
     {"acquire", GET_OP},
+    {"acquireth", GET_OP},
     {"take", GET_OP},
     {"yeet", GET_OP},
+    {"yeeet", GET_OP},
+    {"yeeteth", GET_OP},
     {"talk", TALK_OP},
     {"give", GIVE_OP},
     {"smell", SMELL_OP},
@@ -122,7 +129,7 @@ void Room::parseCmd(vector<string> &args) {
               if (getter) {
                 getter->itm_get();
               } else {
-                game->sayCmd(GET);
+                game->sayCmd(GET, args);
               }
             }
           } else {
