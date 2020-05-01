@@ -17,6 +17,7 @@ missing
 
 src/tdm
 *.o
+*.exe
 
 *.swp
 *.swo
