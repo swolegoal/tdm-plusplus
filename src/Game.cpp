@@ -12,6 +12,8 @@
 
 using namespace std;
 
+Game::~Game() { for (Room *r : rooms) { delete r; } }
+
 Game::Game() {
   score = 0;
 
@@ -90,6 +92,7 @@ bool Game::play(void) {
         if (yn && args.size() > 0) {
           switch (yn) {
             case YES:
+              cout << '\n';
               return true;
             case NO:
               return false;

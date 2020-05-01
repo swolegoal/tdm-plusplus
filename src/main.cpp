@@ -11,7 +11,8 @@ int main(void) {
 
     play_again = game->play();
 
-    // delete game;
+    // DELETED!!!
+    delete game;
   }
 
   return 0;

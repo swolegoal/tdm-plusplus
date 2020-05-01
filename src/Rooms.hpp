@@ -12,9 +12,9 @@ using namespace std;
 enum room_key { MAIN_ROOM, NORTH, SOUTH, DENNIS };
 
 class Room: public GameWumpus {
-  friend class Game;
-
   public:
+    ~Room();
+
     void setupItemWumpii(void);
     virtual void setupRoomMaps(void);
 

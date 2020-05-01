@@ -20,8 +20,6 @@ class GameWumpus {
 
 class Item : public GameWumpus {
   public:
-    Item();
-
     virtual bool itm_get(void) = 0;
     virtual void itm_look(void);
     virtual void itm_give(void);

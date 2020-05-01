@@ -29,7 +29,7 @@ class Game {
 
   public:
     Game();
-    //~Game();  // Soon...
+    ~Game();
 
     inline vector<string> getArgs(const string prompt);
     inline void sayArgs(vector<string> &args) const;

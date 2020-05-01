@@ -8,6 +8,8 @@
 
 using namespace std;
 
+Room::~Room() { for (auto &i : items) { delete i.second; } }
+
 bool Room::getItem(string key) {
   Item *item = items[key];
 
