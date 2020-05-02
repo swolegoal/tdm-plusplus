@@ -29,7 +29,6 @@ class Room: public GameWumpus {
   protected:
     unordered_map<string, Item*> items;
     string room_desc;
-    //unordered_map<string, int> valid_rooms;
     unordered_map<string, Room*> valid_rooms;
 };
 

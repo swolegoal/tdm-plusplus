@@ -48,10 +48,11 @@ class Game {
 
     void addToScore(int amt);
     void Over();
-    void win(void);
 
 
   private:
+    void win(void);
+
     int score;
     bool over = false;
     bool won = false;

@@ -210,6 +210,7 @@ void Room::parseCmd(vector<string> &args) {
           game->sayCmd(PWD);
           break;
         default:
+          game->sayCmd(UNKNOWN);
           break;
       }
     } else {
