@@ -23,5 +23,16 @@ src/tdm
 *.swo
 *.swn
 
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.run.xml
+*.tex.bbl
+*.tex.blg
+
 test/
 recording/
