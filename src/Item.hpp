@@ -28,9 +28,6 @@ class Item : public GameWumpus {
     bool getOof() const;
 
   protected:
-    int got_idx = -1;  // When a get gives your inventory an item
-    int got_amt = 0;
-
     int get_idx = 0;
     int look_idx = 0;
 

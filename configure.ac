@@ -1,4 +1,4 @@
-AC_INIT([thy-dungeonman++], [0.1], [tuxlovesyou@gmail.com])
+AC_INIT([thy-dungeonman++], [0.9], [tuxlovesyou@gmail.com])
 AM_INIT_AUTOMAKE([foreign -Wall -Werror])
 AC_PROG_CC
 AC_PROG_CXX
