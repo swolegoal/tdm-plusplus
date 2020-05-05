@@ -7,6 +7,8 @@
 
 using namespace std;
 
+Item::~Item() { return; }
+
 bool Item::getOof() const { return oof; }
 
 int Item::getIdx(char ikey) const {

@@ -13,7 +13,7 @@ enum room_key { MAIN_ROOM, NORTH, SOUTH, DENNIS };
 
 class Room: public GameWumpus {
   public:
-    ~Room();
+    virtual ~Room();
 
     void setupItemWumpii(void);
     virtual void setupRoomMaps(void);
