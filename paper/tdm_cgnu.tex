@@ -38,7 +38,8 @@ Using these features greatly improved the efficiency of game's entities,
 locations, and text parsing, while also decreasing the code's complexity and
 verbosity.  The game's main text parser was implemented solely using simple
 conditional branches fed by the hashing facilities inherent in the
-\textsf{std::unordered\_map} datatype, to form a very simple parsing tree.
+\textsf{std::unordered\_map} datatype \parencite{umap-cpp}, to form a very
+simple parsing tree.
 }
 \keywords{C++, text parsing, video games, dymamic memory, polymorphism}
 \authornote{Andrew Rogers, Computer Science Department,
@@ -58,7 +59,9 @@ Game Code: https://github.com/tuxlovesyou/tdm-plusplus
 }
 
 \begin{document}
-\maketitle
+ \maketitle
+
+%\textsf{tdm}
 
 \section{Objective}
 The aim of the project detailed in this paper is to create a faithful C++ port
@@ -79,7 +82,7 @@ compiled binary name, \textsf{tdm}, in this paper (for the most part).
     \includegraphics[width=0.5\textwidth]{use-case-dia}
   \captionsetup{justification=centering}
   \captionof{figure}{A use case diagram.  Video game (left) administering fun
-                     to a user (right)}\label{vid-devs}
+                     to a user (right)}\label{fun}
 \end{center}
 
 \begin{center}
@@ -176,7 +179,151 @@ inheritance\parencite{inh-g4g}.  Polymorphism can be leveraged to write code
 that is powerful and concise without being overly repetitious.
 
 In \textsf{tdm}, the above C++ development strategies ended up being used quite
-heavily.  A casual
+heavily.  The game is primarily made up of three classes, the \textsf{Game}
+class, the \textsf{Room} class, and the \textsf{Item} class:
+\begin{singlespace}
+\begin{framed}
+\begin{lstlisting}[language=C++]
+class Game {
+  friend void Trinket::itm_give(void);
+  friend bool Trinket::itm_get(void);
+  friend void Room::parseCmd(vector<string> &args);
+  friend void MainRoom::setupRoomMaps(void);
+  friend void NorthRoom::setupRoomMaps(void);
+  friend void SouthRoom::setupRoomMaps(void);
+  friend void DennisRoom::setupRoomMaps(void);
+
+  public:
+    Game();
+    ~Game();
+
+    inline vector<string> getArgs(const string prompt);
+    inline void sayArgs(vector<string> &args) const;
+    inline void sayArgs(vector<string> &args, int start) const;
+    inline void sayArgs(vector<string> &args,
+                        int start, int end) const;
+    void sayCmd(int cmd) const;
+    void sayCmd(int cmd, vector<string> &args) const;
+    void sayTxt(const string *_txt) const;
+    void sayTxt(const string *_txt, vector<string> &args) const;
+    inline void sayAnA(vector<string> &args) const;
+    int getScore() const;
+
+    void lc(string &io);
+
+    bool play(void);
+
+    void addToScore(int amt);
+    void Over();
+
+
+  private:
+    void win(void);
+
+    int score;
+    bool over = false;
+    bool won = false;
+    bool has_trinket = false;
+    Trinket *trinket;
+
+    vector<Room *> rooms = {
+      new MainRoom(), new NorthRoom(), new SouthRoom(),
+      new DennisRoom()
+    };
+
+    Room *room;  // Current room
+
+    const string txt[15] = { /* Lots of text */ };
+};
+
+class Room: public GameWumpus {
+  public:
+    ~Room();
+
+    void setupItemWumpii(void);
+    virtual void setupRoomMaps(void);
+
+    virtual void desc();
+    virtual void enter();  // Allows setup of room-entering events
+
+    bool getItem(string key);
+    void lookItem(string key);
+
+    void parseCmd(vector<string> &args);
+
+  protected:
+    unordered_map<string, Item*> items;
+    string room_desc;
+    unordered_map<string, Room*> valid_rooms;
+};
+
+class Item : public GameWumpus {
+  public:
+    virtual bool itm_get(void) = 0;
+    virtual void itm_look(void);
+    virtual void itm_give(void);
+
+    int getIdx(char ikey) const;
+    bool getOof() const;
+
+  protected:
+    int get_idx = 0;
+    int look_idx = 0;
+    bool oof = false;
+
+    vector<string> get_txt;
+    vector<string> look_txt;
+};
+\end{lstlisting}
+\end{framed}
+\end{singlespace}
+
+The \textsf{Room} and \textsf{Item} classes are abstract base classes that are
+used as the basis for all of the \textsf{Game}'s various \textsf{Room}s and all
+of the \textsf{Room}s' various \textsf{Item}s.  The \textsf{MainRoom},
+\textsf{NorthRoom}, \textsf{SouthRoom}, and \textsf{DennisRoom} are rooms that
+override \textsf{setupRoomMaps}, \textsf{desc}, \textsf{enter}, among other
+things.  The \textsf{virtual} functions \textsf{void Room::desc()} and
+\textsf{void Room::desc()} are overridden in the \textsf{SouthRoom} class to
+account for special occasionally insulting messages the game tells the player
+while there.  The \textsf{Item} class serves as the basis of the \textsf{Scroll},
+\textsf{Flask}, \textsf{Parapets}, \textsf{Rope}, \textsf{Trinket}, and
+\textsf{Jimberjam} classes.  Most of the \textsf{Item}s override
+\textsf{itm\_get} and \textsf{itm\_look}.  For example, in the \textsf{Rope}
+class:
+
+\begin{framed}
+\begin{lstlisting}[language=C++]
+void Rope::itm_look(void) { game->sayTxt(&look_txt[look_idx]); }
+
+bool Rope::itm_get(void) {
+  game->addToScore(-1);
+  game->sayTxt(&get_txt[get_idx]);
+  game->Over();
+
+  return false;
+}
+\end{lstlisting}
+\end{framed}
+
+The \textsf{Trinket} class also overrides \textsf{itm\_give}:
+
+\begin{framed}
+\begin{lstlisting}[language=C++]
+void Trinket::itm_give(void) {
+  if (game->room == game->rooms.at(DENNIS)) {
+    string give_txt = DEN_GIVE_TKT;
+    game->sayTxt(&give_txt);
+    game->win();
+    game->Over();
+  } else {
+    game->sayCmd(UNKNOWN);
+  }
+}
+\end{lstlisting}
+\end{framed}
+
+A casual
 read through the source code will reveal a quite a few uses of polymorphism, from the
 \textsf{Game} class, all the way to the innermost derived \textsf{Item} classes
 that live within the various intermediary \textsf{Room} classes by reference as
@@ -185,6 +332,158 @@ named \textsf{items}.  The various \textsf{Room} classes themselves are also
 derived from a base \textsf{Room} class are stored by reference within a
 \textsf{std::vector<Room *>} container named \textsf{rooms}.
 
+The various derived \textsf{Room}s are initialized in the \textsf{Game} class
+definition found in \textsf{Game.hpp}:
+
+\begin{framed}
+\begin{lstlisting}[language=C++]
+class Game {
+  ...
+  private:
+    ...
+    vector<Room *> rooms = {
+      new MainRoom(), new NorthRoom(), new SouthRoom(),
+      new DennisRoom()
+    };
+   ...
+};
+\end{lstlisting}
+\end{framed}
+
+The \textsf{Room}s and all of their respective \textsf{Item}s each have own
+\textsf{GameWumpus} (more on those later on) initialized in
+\textsf{Game::Game()}:
+
+\begin{framed}
+\begin{lstlisting}[language=C++]
+Game::Game() {
+  ...
+
+  for (Room *r : rooms) {
+    r->gg(this);
+    r->setupItemWumpii();
+    r->setupRoomMaps();
+  }
+}
+\end{lstlisting}
+\end{framed}
+
+Setting up each \textsf{Item}'s \text{GameWumpus}:
+
+\begin{framed}
+\begin{lstlisting}[language=C++]
+void Room::setupItemWumpii(void) {
+  for (const auto &pair : items) {
+    pair.second->gg(game);
+  }
+}
+\end{lstlisting}
+\end{framed}
+
+All of the \textsf{Item}s in a \textsf{Room} are set up in the \textsf{Room}'s
+constructor.  In the \textsf{DennisRoom}, for example, its sole \textsf{Item}
+(a \textsf{Jimberjam}) is added to it's \textsf{items}:
+
+\begin{framed}
+\begin{lstlisting}[language=C++]
+DennisRoom::DennisRoom() {
+  items["jimberjam"] = new Jimberjam();
+  room_desc = DEN_DESC;
+}
+\end{lstlisting}
+\end{framed}
+
+The \textsf{std::unordered\_map} of valid rooms the player can travel to
+(\textsf{unordered\_map<string, Room*> valid\_rooms}) is setup in
+\textsf{Room::setupRoomMaps(void)}, a \textsf{virtual} function overridden in
+all derived \textsf{Room}s.  They are denoted by a \textsf{string} key (useful
+for the parser) whose value is the pointer to the associated \text{Room} object
+that in \textsf{rooms} vector described earlier within the \textsf{Game} class.
+For example, in the \textsf{MainRoom} class the valid rooms keys are filled with
+their respective \textsf{Room} pointers at enumerated \textsf{vector} indicies:
+
+\begin{framed}
+\begin{lstlisting}[language=C++]
+void MainRoom::setupRoomMaps(void) {
+  valid_rooms["north"] = game->rooms.at(NORTH);
+  valid_rooms["south"] = game->rooms.at(SOUTH);
+  valid_rooms["dennis"] = game->rooms.at(DENNIS);
+}
+\end{lstlisting}
+\end{framed}
+
+When the game starts, the current \textsf{Room *room} is set to point to the
+instance of the \textsf{MainRoom} class, and the room is \textsf{enter}ed and
+\textsf{desc}ribed:
+
+\begin{framed}
+\begin{lstlisting}[language=C++]
+bool Game::play(void) {
+  room = rooms.at(0);
+  room->enter();
+  room->desc();
+\end{lstlisting}
+\end{framed}
+
+The first set of \textsf{vector<string>} arguments are captured and sent to the
+current \textsf{Room}'s parser (whose structure will be described later in this
+paper).  This happens in a loop until the \textsf{Game}'s \textsf{bool over}
+flag has been set:
+\begin{framed}
+\begin{lstlisting}[language=C++]
+  while (!over) {
+    vector<string> args = getArgs("\nWhat wouldst thou deau?\n> ");
+    room->parseCmd(args);
+  }
+\end{lstlisting}
+\end{framed}
+
+The \textsf{Room::parseCmd(vector<string> \&args)} performs operations on the
+current \textsf{Room}'s \textsf{Item}s whenever the player tries to
+\textsf{LOOK} at, \textsf{GET}, or \textsf{GIVE} an \textsf{Item}.  For example,
+when the player tries to \textsf{GET} something:
+
+\begin{framed}
+\begin{lstlisting}[language=C++]
+        case GET_OP: {
+          Item *getter = NULL;
+          if (args.size() > 1) {
+            unordered_map<string, bool> ye_yon = {
+              {"ye", true},
+              {"yon", true},
+              {"thy", true},
+              {"the", true},
+              {"that", true},
+              {"my", true},
+              {"yonder", true}
+            };
+            if (args.size() >= 3 && ye_yon[myargs.at(1)]) {
+              getter = items[myargs.at(2)];
+              if (getter) {
+                getter->itm_get();
+              } else {
+                game->sayCmd(GET);
+              }
+            } else if (myargs.at(1) == "dagger") {
+              game->sayCmd(GET_DAGGER);
+              game->addToScore(25);
+            } else {
+              getter = items[myargs.at(1)];
+              if (getter) {
+                getter->itm_get();
+              } else {
+                game->sayCmd(GET, args);
+              }
+            }
+          } else {
+            game->sayCmd(UNKNOWN);
+          }
+          break;
+        }
+\end{lstlisting}
+\end{framed}
+
+\subsection{About the \textsf{GameWumpus}}
 Another item of note: to easily access of the state of the game and call essential
 mutator methods on the core \textsf{Game} from actions triggered by \textsf{Item}s within
 \textsf{Room}s in a way that didn't completely invalidate the entire application's central
@@ -290,8 +589,9 @@ inline void Game::sayAnA(vector<string> &args) const {
 \end{lstlisting}
 \end{framed}
 
-\section{Parsing of User Input}
-Thanks to abilities granted by \textsf{std::basic\_istringstream},
+\subsection{Parsing of User Input}
+Thanks to abilities granted by \textsf{std::basic\_istringstream}
+\parencite{iss-cpp},
 the output of the interactive game prompt's \textsf{std::getline} can
 iterate over space-separated arguments, to yield a
 \textsf{std::vector<string>} of  the arguments, all without the need of writing code
@@ -560,9 +860,10 @@ What wouldst thou deau?
 From this point, the rest of the game ostensibly works, though an entire
 walkthrough will not be delivered in this section, so as not to spoil the entire
 game for the reader.  Instead, a few noteworthy features of the game will be
-highlighted in this section \emph{(continued on the next page)}.
+highlighted in this section
+% \emph{(continued on the next page)}.
+% \clearpage
 
-\clearpage
 New \textsf{GET} verb aliases for the player to use and discover:
 
 \begin{singlespace}
@@ -606,6 +907,7 @@ Thou cannotst get that. Quit making stuffeth up!
 \end{framed}
 \end{singlespace}
 
+% \newpage
 Correct \textsf{a/an} article selection when the player attempts to
 \textsf{GIVE} something that they don't have:
 
@@ -678,7 +980,8 @@ cleanly, though the code has yet to be extensively tested with \textsf{valgrind}
 or \textsf{gdb} in conjunction with a Bash/Python fuzzer, so it cannot be said
 with $100\%$ confidence that it \emph{does not} leak \emph{any} memory...
 With that being said, here is an example of
-\textbf{Thy Dungeonman\textsuperscript{++}}'s live reload/respawn in action:
+\textbf{Thy Dungeonman\textsuperscript{++}}'s live reload/respawn in action
+(currently broken on macOS):
 
 \begin{singlespace}
 \begin{framed}
@@ -772,6 +1075,12 @@ can go in any number of directions, so long as I can get the blessing of
 \emph{Videlectrix}, aka. \emph{The Brothers Chaps}.  Perhaps one day there will
 be a version of this port using \textsf{ncurses}, \emph{SDL}, or even something
 more exotic involving physical hardware!
+
+\section{Errata}
+\begin{itemize}
+  \item The \textsf{Game} Burninator\footnote{Trogdor? \parencite{hrw-trog}}, er, destructor is
+        broken on macOS.
+\end{itemize}
 
 \printbibliography
 \end{document}
