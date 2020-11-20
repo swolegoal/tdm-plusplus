@@ -42,6 +42,7 @@ class Game {
     inline void sayAnA(vector<string> &args) const;
     int getScore() const;
 
+    void uc(string &io);
     void lc(string &io);
 
     bool play(void);

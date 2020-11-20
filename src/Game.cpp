@@ -180,6 +180,11 @@ void Game::sayTxt(const string *_txt, vector<string> &args) const {
   putchar('\n');
 }
 
+void Game::uc(string &io) {
+  transform(io.begin(), io.end(), io.begin(),
+            [](unsigned char c){ return toupper(c); });
+}
+
 void Game::lc(string &io) {
   transform(io.begin(), io.end(), io.begin(),
             [](unsigned char c){ return tolower(c); });
