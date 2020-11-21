@@ -166,7 +166,7 @@ void Game::sayTxt(const string *_txt, vector<string> &args) const {
           break;
         case ('v'): {
           string verb = args.at(0);
-          if (verb == "gimme")
+          if (verb == "gimme" || verb == "")
             verb = "get";
 
           cout << verb;
