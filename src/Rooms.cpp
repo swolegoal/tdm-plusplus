@@ -232,12 +232,17 @@ MainRoom::MainRoom() {
   items["flask"] = new Flask();
 
   room_desc = MAIN_DESC;
+  lookies = MAIN_LOOK_HELP;
 }
 
 void MainRoom::setupRoomMaps(void) {
   valid_rooms["north"] = game->rooms.at(NORTH);
   valid_rooms["south"] = game->rooms.at(SOUTH);
   valid_rooms["dennis"] = game->rooms.at(DENNIS);
+}
+
+void MainRoom::desc() {
+  items["scroll"]->getOof() ? game->sayTxt(&lookies) : game->sayTxt(&room_desc);
 }
 
 NorthRoom::NorthRoom() {

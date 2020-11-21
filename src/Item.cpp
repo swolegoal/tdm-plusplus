@@ -47,7 +47,7 @@ bool Scroll::itm_get(void) {
 
   switch (get_idx) {
     case 0:
-      zap = true;
+      oof = true;
       score_mod_amt = 2;
       get_idx++;
       break;
@@ -64,7 +64,7 @@ bool Scroll::itm_get(void) {
 }
 
 void Scroll::itm_look(void) {
-  look_idx = zap ? 1 : 0;
+  look_idx = oof ? 1 : 0;
   game->sayTxt(&look_txt[look_idx]);
 }
 

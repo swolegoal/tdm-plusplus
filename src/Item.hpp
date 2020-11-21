@@ -46,9 +46,6 @@ class Scroll: public Item {
 
     virtual bool itm_get(void);
     virtual void itm_look(void);
-
-  private:
-    bool zap = false;
 };
 
 class Flask: public Item {

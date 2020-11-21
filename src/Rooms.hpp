@@ -37,6 +37,11 @@ class MainRoom: public Room {
   public:
     MainRoom();
     virtual void setupRoomMaps(void);
+
+    virtual void desc();
+
+  private:
+    string lookies;
 };
 
 // NORTH OF MAIN ROOM

@@ -4,6 +4,11 @@
     "Behind ye scroll is a FLASK.  Obvious exits are\n" \
     "NORTH, SOUTH, and DENNIS."
 
+#define MAIN_LOOK_HELP \
+    "Ye find yeself in yon dungeon.  Back yonder\n" \
+    "there is a FLASK.  Obvious exits are\n" \
+    "NORTH, SOUTH, and DENNIS."
+
 // North of main dungeon room
 #define N_DESC \
     "You go NORTH through yon corridor. You arrive at\n" \
